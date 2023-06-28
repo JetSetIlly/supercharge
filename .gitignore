@@ -1,0 +1,6 @@
+*.bin
+*.wav
+*.swp
+Session.vim
+supercharge_linux_amd64
+supercharge_windows_amd64
