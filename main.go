@@ -15,23 +15,18 @@ import (
 // the context type defines the command line parameters for the program and is
 // also a valid io.Writer, suitable for verbose logging
 type context struct {
-	verbose   bool
 	overwrite bool
 }
 
 func (ctx context) Write(p []byte) (n int, err error) {
-	if ctx.verbose {
-		os.Stdout.Write(p)
-		return len(p), nil
-	}
-	return 0, nil
+	os.Stdout.Write(p)
+	return len(p), nil
 }
 
 func main() {
 	var ctx context
 
 	// parse command line arguments
-	flag.BoolVar(&ctx.verbose, "v", false, "verbose messages")
 	flag.BoolVar(&ctx.overwrite, "o", false, "overwrite existing wav files")
 	flag.Usage = func() {
 		fmt.Printf("Usage: %s [ROM files]\n\n", filepath.Base(os.Args[0]))
@@ -84,7 +79,7 @@ func process(ctx context, romFile string) error {
 	// validate with the supercharge package that this rom data is okay
 	err = supercharge.Validate(rom)
 	if err != nil {
-		return fmt.Errorf("%s skipped", filepath.Base(romFile))
+		return fmt.Errorf("%s skipped: %w", filepath.Base(romFile), err)
 	}
 
 	// create wav file
